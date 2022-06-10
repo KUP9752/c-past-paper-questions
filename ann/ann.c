@@ -4,7 +4,27 @@
 ann_t *ann_create(int num_layers, int *layer_outputs)
 {
   /**** PART 2 - QUESTION 1 ****/
-  return NULL; // delete after implementing
+  ann_t *ann = (ann_t *) malloc(sizeof(ann_t));
+  if (!ann) {
+    perror("Memory Allocation Error");
+    return NULL;
+  }
+
+  ann -> input_layer = layer_create();
+  layer_init(ann -> input_layer, layer_outputs[0], NULL);
+  layer_t *prev = ann -> input_layer;
+
+  for (int layer = 1; layer < num_layers; layer++) {
+    layer_t *current = layer_create();
+    if (!current || layer_init(current, layer_outputs[layer], prev)){
+      perror("Memory Allocation error");
+      return NULL;
+    }
+    prev = current;
+  }
+  
+  ann -> output_layer = prev;
+  return ann;
   /* 4 MARKS */
 }
 
@@ -12,7 +32,15 @@ ann_t *ann_create(int num_layers, int *layer_outputs)
 void ann_free(ann_t *ann)
 {
   /**** PART 2 - QUESTION 2 ****/
-
+  layer_t *prev;
+  layer_t *current = ann -> input_layer;
+  while (current != ann->output_layer) {
+      prev = current;
+      current = current -> next;
+      layer_free(prev);
+  }
+  layer_free(current); //current is now outputlayer.
+  free(ann);
   /* 2 MARKS */
 }
 
@@ -20,7 +48,15 @@ void ann_free(ann_t *ann)
 void ann_predict(ann_t const *ann, double const *inputs)
 {
   /**** PART 2 - QUESTION 3 ****/
-
+  for (int i = 0; i < ann -> input_layer -> num_outputs; i++) {
+    ann -> input_layer -> outputs[i] = inputs[i];
+  }
+  
+  layer_t *current = ann -> input_layer -> next;
+  while (current != ann-> output_layer) {
+    layer_compute_outputs(current);
+    current = current -> next;
+  }
   /* 2 MARKS */
 }
 
