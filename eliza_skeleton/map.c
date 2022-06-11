@@ -5,6 +5,10 @@
 #include <string.h>
 #include <stdio.h>
 
+#define NULLCHECK(ptr, msg) if (!ptr) { \
+  perror(msg); \
+  exit(EXIT_FAILURE); \
+};
 struct map_node
 {
   char *key;
@@ -36,19 +40,42 @@ struct map_node *map_insert_internal(struct map_node *node, const char *key, voi
  /* YOU SHOULD DELETE THE CONTENTS OF THIS FUNCTION AND REPLACE IT WITH
   * YOUR ANSWER TO PART 2, QUESTION 1.
   */
-
-  fprintf(stderr, "map_insert_internal() unimplemented.\n");
-  return NULL;
+ if (!node) { // empty map:
+  struct map_node *newNode = map_alloc_node();
+  NULLCHECK(newNode, "newNode creation: allocation failure");
+  newNode -> key = clone(key);
+  newNode -> value = value;
+  *result = 1;
+  return newNode;
+ } else {
+  int cmp = strcmp(key, node -> key);
+  if (cmp == 0) {
+    *result = 0;
+    return node;
+  } else if (cmp < 0) {
+    node -> left = map_insert_internal(node -> left, clone(key), value, result);
+    return node;
+  } else {
+      node -> right = map_insert_internal(node -> right, clone(key), value, result);
+      return node;
+  }
+ }
+  
 }
 
 
 /* Applies the given function pointer to every *value* in the map */
+void map_apply_elems_internal(struct map_node *node, void (*function)(void *)) {
+  if (node) {
+  function(node->value);
+  map_apply_elems_internal(node->left, function);
+  map_apply_elems_internal(node->right, function);
+}
+}
 
-void map_apply_elems(struct map *m, void (*function)(void *))
-{
- /* YOU SHOULD DELETE THE CONTENTS OF THIS FUNCTION AND REPLACE IT WITH
-  * YOUR ANSWER TO PART 3, QUESTION 1.
-  */
+void map_apply_elems(struct map *m, void (*function)(void *)){
+ map_apply_elems_internal(m->root, function);
+
 }
 
 

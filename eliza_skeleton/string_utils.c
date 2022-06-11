@@ -7,6 +7,12 @@
 #include <stdio.h>
 #include <ctype.h>
 
+
+#define NULLCHECK(ptr, msg) if (!ptr) { \
+  perror(msg); \
+  exit(EXIT_FAILURE); \
+};
+
 /* Returns a heap allocated, null-terminated, zero-length string. */
 
 char *empty_string(void)
@@ -15,9 +21,9 @@ char *empty_string(void)
  /* YOU SHOULD DELETE THE CONTENTS OF THIS FUNCTION AND REPLACE IT WITH
   * YOUR ANSWER TO PART I, QUESTION 1.
   */
-
-  fprintf(stderr, "empty_string() unimplemented.\n");
-  exit(EXIT_FAILURE);
+ char * str = calloc(1, 1);
+ NULLCHECK(str, "empty string: allocation failure");
+ return str;
 }
 
 
@@ -29,9 +35,9 @@ char *clone(const char *str)
  /* YOU SHOULD DELETE THE CONTENTS OF THIS FUNCTION AND REPLACE IT WITH
   * YOUR ANSWER TO PART I, QUESTION 2.
   */
-
-  fprintf(stderr, "clone() unimplemented.\n");
-  exit(EXIT_FAILURE);
+ char *strClone = strcpy(malloc(strlen(str) + 1), str); // +1 for NULL termination;
+ NULLCHECK(strClone, "clone string: allocation failure");
+ return strClone;
 }
 
 
@@ -46,13 +52,15 @@ char *push_string(char *current, const char *append)
  /* YOU SHOULD DELETE THE CONTENTS OF THIS FUNCTION AND REPLACE IT WITH
   * YOUR ANSWER TO PART I, QUESTION 3.
   */
-
-  fprintf(stderr, "push_string() unimplemented.\n");
-  exit(EXIT_FAILURE);
+ current = realloc(current, strlen(current) + strlen(append) + 1); 
+ NULLCHECK(current, "realloc current: reallocation failure");
+ strcat(current, append);
+//  free(append);
+ return current;
 }
 
 
-/* Removes trailing /n (if present) from str */
+/* Removes trailing \n (if present) from str */
 
 void trim_newline(char *str)
 {
