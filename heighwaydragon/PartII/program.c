@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void CopyUniqueLettersPtr(char *, const char *, int );
+char *CopyUniqueLettersPtr(char *, const char *, int );
 int *printIntPtr(int *, long );
 int contains(const char *, char );
 
@@ -10,16 +10,18 @@ int main(void)
 {
   char buffer[] = "good luck";
   char *cpybuffer = NULL;
-  int *intbuffer = NULL;
+  //int *intbuffer = NULL; !!=========== Causes a SEG fault as it is not initialised
+  int *intbuffer = calloc(sizeof(buffer), sizeof(int));
 
   printf("The contents of buffer is: %s\n", buffer);
 
-  CopyUniqueLettersPtr(cpybuffer, buffer, sizeof(buffer));
+  cpybuffer = CopyUniqueLettersPtr(cpybuffer, buffer, sizeof(buffer));
 
   intbuffer = (int *) printIntPtr(intbuffer, sizeof(buffer));
 
   printf("The unique letters are %s and the integer in array position 5 is: %i\n", cpybuffer, intbuffer[5]);
-
+  free(intbuffer);
+  free(cpybuffer);
   return EXIT_SUCCESS;
 }
 
@@ -40,7 +42,7 @@ int contains(const char *s, const char c)
 
 //Copy unique number of characters from a string
 
-void CopyUniqueLettersPtr(char *dst, const char *src, int number_letters)
+char *CopyUniqueLettersPtr(char *dst, const char *src, int number_letters)
 {
   char *temp = calloc(strlen(src) + 1, sizeof(char));
   if (temp == NULL)
@@ -61,6 +63,7 @@ void CopyUniqueLettersPtr(char *dst, const char *src, int number_letters)
 
   dst = realloc(temp, dst - temp + 1);
   free(temp);
+  return dst;
 }
 
 //initialise integer array and prints each item
