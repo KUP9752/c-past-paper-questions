@@ -15,30 +15,31 @@ int main(void) {
     char *table = derived_lookup_table(s);
   
     printf("Derived lookup table: %s\n\n", table);
-    
+    free(table); //non-freed thing
     return EXIT_SUCCESS;
 }
 
 char *derived_lookup_table(char *s) {
 
-	char * o_out = malloc(sizeof(s));
+	//char * o_out = malloc(sizeof(s));
+	char *o_out = calloc(1, strlen(s) + 1); //+1 for "\0"
 	
-        if (o_out == NULL) {
+    if (o_out == NULL) {
 	    perror("malloc");
 	    exit(EXIT_FAILURE);
 	}
 
-	char * o_end = malloc(sizeof(s));
-          
-        o_end = o_out;
+	//char * o_end = malloc(sizeof(s));
+    char *o_end;      
+    o_end = o_out;
 
-        for ( ; *s != '\0' ; ++s) {
+    for ( ; *s != '\0' ; ++s) {
 	    if (!contains(o_out, *s)) {
 	      *o_end++ = *s;
 	    }
 	}
-   
-   	char *out = realloc(out, o_end - o_out + 1);
+
+   	char *out = realloc(o_out, o_end - o_out + 1);
 
 	if (out == NULL) {
 	    perror("realloc");
