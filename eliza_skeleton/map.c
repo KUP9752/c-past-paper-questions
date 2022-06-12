@@ -53,10 +53,10 @@ struct map_node *map_insert_internal(struct map_node *node, const char *key, voi
     *result = 0;
     return node;
   } else if (cmp < 0) {
-    node -> left = map_insert_internal(node -> left, clone(key), value, result);
+    node -> left = map_insert_internal(node -> left, key, value, result);
     return node;
   } else {
-      node -> right = map_insert_internal(node -> right, clone(key), value, result);
+      node -> right = map_insert_internal(node -> right, key, value, result);
       return node;
   }
  }
@@ -75,7 +75,6 @@ void map_apply_elems_internal(struct map_node *node, void (*function)(void *)) {
 
 void map_apply_elems(struct map *m, void (*function)(void *)){
  map_apply_elems_internal(m->root, function);
-
 }
 
 

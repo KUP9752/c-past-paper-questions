@@ -264,6 +264,8 @@ struct rule *choose_rule(struct list* rules)
 
 void destroy_rule(struct rule *rule)
 {
+  //LEAKFIX
   free(rule->key);
+  free(rule -> decomp);
   free(rule->reasmb);
 }
