@@ -57,7 +57,7 @@ char *CopyUniqueLettersPtr(char *dst, const char *src, int number_letters)
   {
     if (!contains(temp, *src))
     {
-      *dst++ =*src;
+      *dst++ = *src;
     }
   }
 
